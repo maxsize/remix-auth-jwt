@@ -1,12 +1,15 @@
 import "reflect-metadata";
 import { AppLoadContext } from "@remix-run/server-runtime";
-import { Strategy } from "remix-auth/src/strategy";
 // import * as jwt from "jsonwebtoken-esm";
 import type { JwtPayload } from "jsonwebtoken";
 import { JsonwebtokenService } from "./core/service/jsonwebtoken/JsonwebtokenService.js";
 import { container } from "tsyringe";
 import { jsonwebtokenModule } from "./core/service/di/JsonwebtokenModule.js";
 import type { Algorithm } from "jsonwebtoken";
+
+export type VerifyFunction<User, VerifyParams> = (
+  params: VerifyParams,
+) => Promise<User>;
 
 jsonwebtokenModule();
 
@@ -44,11 +47,11 @@ export class JwtStrategy<User> {
   protected algorithms: Algorithm[];
   protected jwt: JsonwebtokenService;
   protected getToken?: JwtStrategyOptions["getToken"];
-  protected verify: Strategy.VerifyFunction<User, JwtStrategyVerifyParams>
+  protected verify: VerifyFunction<User, JwtStrategyVerifyParams>
 
   constructor(
     options: JwtStrategyOptions,
-    verify: Strategy.VerifyFunction<User, JwtStrategyVerifyParams>
+    verify: VerifyFunction<User, JwtStrategyVerifyParams>
   ) {
     // super(verify);
     this.verify = verify;
