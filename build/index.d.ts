@@ -1,9 +1,9 @@
 import "reflect-metadata";
 import { AppLoadContext } from "@remix-run/server-runtime";
-import { Strategy } from "remix-auth/src/strategy";
 import type { JwtPayload } from "jsonwebtoken";
 import { JsonwebtokenService } from "./core/service/jsonwebtoken/JsonwebtokenService.js";
 import type { Algorithm } from "jsonwebtoken";
+export type VerifyFunction<User, VerifyParams> = (params: VerifyParams) => Promise<User>;
 /**
  * This interface declares what configuration the strategy needs from the
  * developer to correctly work.
@@ -33,7 +33,7 @@ export declare class JwtStrategy<User> {
     protected algorithms: Algorithm[];
     protected jwt: JsonwebtokenService;
     protected getToken?: JwtStrategyOptions["getToken"];
-    protected verify: Strategy.VerifyFunction<User, JwtStrategyVerifyParams>;
-    constructor(options: JwtStrategyOptions, verify: Strategy.VerifyFunction<User, JwtStrategyVerifyParams>);
+    protected verify: VerifyFunction<User, JwtStrategyVerifyParams>;
+    constructor(options: JwtStrategyOptions, verify: VerifyFunction<User, JwtStrategyVerifyParams>);
     authenticate(request: Request): Promise<User>;
 }
