@@ -47,7 +47,7 @@ export class JwtStrategy<User> {
   protected algorithms: Algorithm[];
   protected jwt: JsonwebtokenService;
   protected getToken?: JwtStrategyOptions["getToken"];
-  protected verify: VerifyFunction<User, JwtStrategyVerifyParams>
+  public verify: VerifyFunction<User, JwtStrategyVerifyParams>
 
   constructor(
     options: JwtStrategyOptions,
@@ -64,7 +64,7 @@ export class JwtStrategy<User> {
     }
   }
 
-  async authenticate(request: Request): Promise<User> {
+  public async authenticate(request: Request): Promise<User> {
     let token: string | undefined;
     try {
       token = this.getToken

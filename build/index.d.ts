@@ -33,7 +33,7 @@ export declare class JwtStrategy<User> {
     protected algorithms: Algorithm[];
     protected jwt: JsonwebtokenService;
     protected getToken?: JwtStrategyOptions["getToken"];
-    protected verify: VerifyFunction<User, JwtStrategyVerifyParams>;
+    verify: VerifyFunction<User, JwtStrategyVerifyParams>;
     constructor(options: JwtStrategyOptions, verify: VerifyFunction<User, JwtStrategyVerifyParams>);
     authenticate(request: Request): Promise<User>;
 }
