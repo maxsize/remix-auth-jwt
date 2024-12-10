@@ -1,6 +1,6 @@
 import "reflect-metadata";
 import { AppLoadContext } from "@remix-run/server-runtime";
-import { Strategy } from "remix-auth/src/strategy.js";
+import { Strategy } from "remix-auth/src/strategy";
 // import * as jwt from "jsonwebtoken-esm";
 import type { JwtPayload } from "jsonwebtoken";
 import { JsonwebtokenService } from "./core/service/jsonwebtoken/JsonwebtokenService.js";
@@ -37,19 +37,21 @@ export interface JwtStrategyVerifyParams {
   payload: string | JwtPayload;
 }
 
-export class JwtStrategy<User> extends Strategy<User, JwtStrategyVerifyParams> {
+export class JwtStrategy<User> {
   name = "jwt";
 
   protected secret: string;
   protected algorithms: Algorithm[];
   protected jwt: JsonwebtokenService;
   protected getToken?: JwtStrategyOptions["getToken"];
+  protected verify: Strategy.VerifyFunction<User, JwtStrategyVerifyParams>
 
   constructor(
     options: JwtStrategyOptions,
     verify: Strategy.VerifyFunction<User, JwtStrategyVerifyParams>
   ) {
-    super(verify);
+    // super(verify);
+    this.verify = verify;
     this.secret = options.secret;
     this.algorithms = options.algorithms;
     this.jwt = container.resolve<JsonwebtokenService>("JsonwebtokenService");
@@ -59,7 +61,7 @@ export class JwtStrategy<User> extends Strategy<User, JwtStrategyVerifyParams> {
     }
   }
 
-  override async authenticate(request: Request): Promise<User> {
+  async authenticate(request: Request): Promise<User> {
     let token: string | undefined;
     try {
       token = this.getToken

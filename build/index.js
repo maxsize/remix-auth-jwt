@@ -2,14 +2,14 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.JwtStrategy = void 0;
 require("reflect-metadata");
-const strategy_js_1 = require("remix-auth/src/strategy.js");
 const tsyringe_1 = require("tsyringe");
 const JsonwebtokenModule_js_1 = require("./core/service/di/JsonwebtokenModule.js");
 (0, JsonwebtokenModule_js_1.jsonwebtokenModule)();
-class JwtStrategy extends strategy_js_1.Strategy {
+class JwtStrategy {
     constructor(options, verify) {
-        super(verify);
         this.name = "jwt";
+        // super(verify);
+        this.verify = verify;
         this.secret = options.secret;
         this.algorithms = options.algorithms;
         this.jwt = tsyringe_1.container.resolve("JsonwebtokenService");
