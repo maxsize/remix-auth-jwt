@@ -1,15 +1,11 @@
 import "reflect-metadata";
-import { AppLoadContext, SessionStorage } from "@remix-run/server-runtime";
-import {
-  AuthenticateOptions,
-  Strategy,
-  StrategyVerifyCallback,
-} from "remix-auth";
+import { AppLoadContext } from "@remix-run/server-runtime";
+import { Strategy } from "remix-auth/src/strategy.js";
 // import * as jwt from "jsonwebtoken-esm";
 import type { JwtPayload } from "jsonwebtoken";
-import { JsonwebtokenService } from "./core/service/jsonwebtoken/JsonwebtokenService";
+import { JsonwebtokenService } from "./core/service/jsonwebtoken/JsonwebtokenService.js";
 import { container } from "tsyringe";
-import { jsonwebtokenModule } from "./core/service/di/JsonwebtokenModule";
+import { jsonwebtokenModule } from "./core/service/di/JsonwebtokenModule.js";
 import type { Algorithm } from "jsonwebtoken";
 
 jsonwebtokenModule();
@@ -51,7 +47,7 @@ export class JwtStrategy<User> extends Strategy<User, JwtStrategyVerifyParams> {
 
   constructor(
     options: JwtStrategyOptions,
-    verify: StrategyVerifyCallback<User, JwtStrategyVerifyParams>
+    verify: Strategy.VerifyFunction<User, JwtStrategyVerifyParams>
   ) {
     super(verify);
     this.secret = options.secret;
@@ -63,11 +59,7 @@ export class JwtStrategy<User> extends Strategy<User, JwtStrategyVerifyParams> {
     }
   }
 
-  async authenticate(
-    request: Request,
-    sessionStorage: SessionStorage,
-    options: AuthenticateOptions
-  ): Promise<User> {
+  override async authenticate(request: Request): Promise<User> {
     let token: string | undefined;
     try {
       token = this.getToken
@@ -75,57 +67,28 @@ export class JwtStrategy<User> extends Strategy<User, JwtStrategyVerifyParams> {
         : request.headers.get("Authorization")?.split(" ")[1];
 
       if (token == undefined) {
-        return await this.failure(
-          "Format is Authorization: Bearer [token]",
-          request,
-          sessionStorage,
-          options
-        );
+        throw new ReferenceError('Jwt token is missing');
       }
 
       const decoded = this.jwt.verify(token, this.secret, {
         algorithms: this.algorithms,
       });
       if (!decoded) {
-        return await this.failure(
-          "Invalid token",
-          request,
-          sessionStorage,
-          options
-        );
+        throw new ReferenceError('Invalid token');
       }
 
       const user = await this.verify({
         payload: decoded,
-        context: options.context,
       });
-      return await this.success(user, request, sessionStorage, options);
+      return user;
     } catch (error: unknown) {
       if (error instanceof Error) {
-        return await this.failure(
-          error.message,
-          request,
-          sessionStorage,
-          options,
-          error
-        );
+        throw new ReferenceError(error.message);
       }
       if (typeof error === "string") {
-        return await this.failure(
-          error,
-          request,
-          sessionStorage,
-          options,
-          new Error(error)
-        );
+        throw new ReferenceError(error);
       }
-      return await this.failure(
-        "Unknown error",
-        request,
-        sessionStorage,
-        options,
-        new Error(JSON.stringify(error, null, 2))
-      );
+      throw new ReferenceError('Unknown error');
     }
   }
 }
