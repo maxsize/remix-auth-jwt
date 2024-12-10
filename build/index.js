@@ -1,18 +1,66 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.JwtStrategy = void 0;
-require("reflect-metadata");
-const tsyringe_1 = require("tsyringe");
-const JsonwebtokenModule_js_1 = require("./core/service/di/JsonwebtokenModule.js");
-(0, JsonwebtokenModule_js_1.jsonwebtokenModule)();
-class JwtStrategy {
+import "reflect-metadata";
+import { Strategy } from 'remix-auth/strategy';
+import { container } from "tsyringe";
+class JsonwebtokenServiceImpl {
+    constructor() {
+        // eslint-disable-next-line @typescript-eslint/no-var-requires, unicorn/prefer-module
+        const jwt = require("jsonwebtoken");
+        this.jwtSign = jwt.sign;
+        this.jwtVerify = jwt.verify;
+    }
+    verify(token, secretOrPublicKey, options) {
+        const result = this.jwtVerify(token, secretOrPublicKey, options);
+        return result;
+    }
+    sign(
+    // eslint-disable-next-line @typescript-eslint/ban-types
+    payload, secretOrPrivateKey) {
+        const result = this.jwtSign(payload, secretOrPrivateKey);
+        return result;
+    }
+}
+class JsonwebtokenEsmServiceImpl {
+    constructor() {
+        // eslint-disable-next-line @typescript-eslint/no-var-requires, unicorn/prefer-module
+        const jwt = require("jsonwebtoken-esm");
+        this.jwtSign = jwt.sign;
+        this.jwtVerify = jwt.verify;
+    }
+    verify(token, secretOrPublicKey, options) {
+        const result = this.jwtVerify(token, secretOrPublicKey, options);
+        return result;
+    }
+    sign(
+    // eslint-disable-next-line @typescript-eslint/ban-types
+    payload, secretOrPrivateKey) {
+        const result = this.jwtSign(payload, secretOrPrivateKey);
+        return result;
+    }
+}
+function jsonwebtokenModule() {
+    if (typeof process !== "undefined" &&
+        process.versions &&
+        process.versions.node) {
+        container.register("JsonwebtokenService", {
+            useClass: JsonwebtokenServiceImpl,
+        });
+    }
+    else {
+        container.register("JsonwebtokenService", {
+            useClass: JsonwebtokenEsmServiceImpl,
+        });
+    }
+}
+jsonwebtokenModule();
+export class JwtStrategy extends Strategy {
+    // public verify: VerifyFunction<User, JwtStrategyVerifyParams>
     constructor(options, verify) {
+        super(verify);
         this.name = "jwt";
-        // super(verify);
-        this.verify = verify;
+        // this.verify = verify;
         this.secret = options.secret;
         this.algorithms = options.algorithms;
-        this.jwt = tsyringe_1.container.resolve("JsonwebtokenService");
+        this.jwt = container.resolve("JsonwebtokenService");
         if (options.getToken) {
             this.getToken = options.getToken;
         }
@@ -49,4 +97,3 @@ class JwtStrategy {
         }
     }
 }
-exports.JwtStrategy = JwtStrategy;

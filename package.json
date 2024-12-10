@@ -3,6 +3,7 @@
   "version": "0.4.0",
   "main": "./build/index.js",
   "types": "./build/index.d.ts",
+  "type": "module",
   "author": {
     "name": "takagimeow",
     "email": "mit@takagi.app",
@@ -40,15 +41,10 @@
     "@remix-run/server-runtime": "^2.15.0"
   },
   "devDependencies": {
-    "@babel/core": "^7.14.2",
-    "@babel/preset-env": "^7.14.1",
-    "@babel/preset-react": "^7.13.13",
-    "@babel/preset-typescript": "^7.13.0",
-    "@remix-run/node": "^2.15.0",
-    "@remix-run/react": "^2.15.0",
     "@remix-run/server-runtime": "^2.15.0",
+    "@total-typescript/tsconfig": "^1.0.4",
     "@types/jest": "^26.0.23",
-    "@types/jsonwebtoken": "^9.0.1",
+    "@types/jsonwebtoken": "^9.0.7",
     "@typescript-eslint/eslint-plugin": "^4.23.0",
     "@typescript-eslint/parser": "^4.23.0",
     "babel-jest": "^26.6.3",
@@ -67,7 +63,6 @@
   },
   "dependencies": {
     "jsonwebtoken": "^8.5.1",
-    "jsonwebtoken-esm": "^1.0.5",
     "reflect-metadata": "^0.1.13",
     "remix-auth": "^4.0.0",
     "tsyringe": "^4.7.0"
