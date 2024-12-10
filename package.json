@@ -37,16 +37,16 @@
   },
   "homepage": "https://github.com/takagimeow/remix-auth-jwt",
   "peerDependencies": {
-    "@remix-run/server-runtime": "^2.15.1"
+    "@remix-run/server-runtime": "^2.15.0"
   },
   "devDependencies": {
     "@babel/core": "^7.14.2",
     "@babel/preset-env": "^7.14.1",
     "@babel/preset-react": "^7.13.13",
     "@babel/preset-typescript": "^7.13.0",
-    "@remix-run/node": "^2.15.1",
-    "@remix-run/react": "^2.15.1",
-    "@remix-run/server-runtime": "^2.15.1",
+    "@remix-run/node": "^2.15.0",
+    "@remix-run/react": "^2.15.0",
+    "@remix-run/server-runtime": "^2.15.0",
     "@types/jest": "^26.0.23",
     "@types/jsonwebtoken": "^9.0.1",
     "@typescript-eslint/eslint-plugin": "^4.23.0",
